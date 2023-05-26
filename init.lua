@@ -1,8 +1,8 @@
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.mapleader = ','
+vim.g.maplocalleader = ','
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -203,8 +203,7 @@ vim.wo.signcolumn = 'yes'
 
 -- Decrease update time
 vim.o.updatetime = 250
-vim.o.timeout = true
-vim.o.timeoutlen = 300
+vim.o.timeout = false
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -247,7 +246,7 @@ pcall(require('telescope').load_extension, 'fzf')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>fr', require('telescope.builtin').oldfiles, { desc = '[F]ind [r]ecently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader>,', require('telescope.builtin').buffers, { desc = '[,] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
