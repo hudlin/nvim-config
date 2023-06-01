@@ -140,6 +140,21 @@ require('lazy').setup({
     end,
   },
 
+  -- :GoImpl {reciver} {interface}
+  { 'rhysd/vim-go-impl' },
+
+  -- Surround goodness
+  -- ys{motion}{char}
+  -- ds{char}
+  -- cs{target}{replacement}
+  {
+    'kylechui/nvim-surround',
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup{}
+    end
+  },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -376,6 +391,18 @@ local on_attach = function(_, bufnr)
 
   -- Format
   nmap('<leader>F', vim.lsp.buf.format, '[F]ormat')
+  nmap('<leader>I', function()
+    for _, client in ipairs(vim.lsp.get_active_clients()) do
+      if client.name == 'gopls' then
+      vim.lsp.buf.code_action{
+        context = {
+          only = { 'source.organizeImports' }
+        },
+        apply = true
+      }
+      end
+    end
+  end, '[F]ormat')
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
@@ -478,5 +505,6 @@ cmp.setup {
   },
 }
 
+require("custom.snippets")
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
