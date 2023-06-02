@@ -241,6 +241,11 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 vim.keymap.set('n', '<C-u>', "<C-u>zz", { noremap = true })
 vim.keymap.set('n', '<C-d>', "<C-d>zz", { noremap = true })
 
+-- Common simple surrounds
+vim.keymap.set('i', '<C-l><C-l>', function()
+  require('nvim-surround').insert_surround{ line_mode = true }
+end, { noremap = true, silent = true })
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
