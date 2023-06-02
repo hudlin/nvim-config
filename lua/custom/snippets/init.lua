@@ -21,11 +21,19 @@ local conds = require("luasnip.extras.conditions")
 local conds_expand = require("luasnip.extras.conditions.expand")
 
 ls.add_snippets("go", {
-   s("iferr", {
+  s("iferr", {
     t({"if err != nil {", "\treturn "}),
-    i(1, "err"),
+    c(1, {
+      t("err"),
+      sn(nil, {
+        i(1, "nil"),
+        t(", err"),
+      }),
+    }),
     t({"", "}"}),
   }),
 }, {
   key = "java"
 })
+
+
