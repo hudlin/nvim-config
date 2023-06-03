@@ -140,6 +140,21 @@ require('lazy').setup({
     end,
   },
 
+  -- :GoImpl {reciver} {interface}
+  { 'rhysd/vim-go-impl' },
+
+  -- Surround goodness
+  -- ys{motion}{char}
+  -- ds{char}
+  -- cs{target}{replacement}
+  {
+    'kylechui/nvim-surround',
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup{}
+    end
+  },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -225,6 +240,11 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Better scolling
 vim.keymap.set('n', '<C-u>', "<C-u>zz", { noremap = true })
 vim.keymap.set('n', '<C-d>', "<C-d>zz", { noremap = true })
+
+-- Common simple surrounds
+vim.keymap.set('i', '<C-l><C-l>', function()
+  require('nvim-surround').insert_surround{ line_mode = true }
+end, { noremap = true, silent = true })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -376,6 +396,18 @@ local on_attach = function(_, bufnr)
 
   -- Format
   nmap('<leader>F', vim.lsp.buf.format, '[F]ormat')
+  nmap('<leader>I', function()
+    for _, client in ipairs(vim.lsp.get_active_clients()) do
+      if client.name == 'gopls' then
+      vim.lsp.buf.code_action{
+        context = {
+          only = { 'source.organizeImports' }
+        },
+        apply = true
+      }
+      end
+    end
+  end, '[F]ormat')
 
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
@@ -434,7 +466,9 @@ mason_lspconfig.setup_handlers {
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 
-luasnip.config.setup {}
+luasnip.config.setup {
+  history = true,
+}
 
 cmp.setup {
   completion = {
@@ -449,24 +483,25 @@ cmp.setup {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
-    ['<CR>'] = cmp.mapping.confirm {
+    ['<C-y>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
+    ['<C-x>'] = cmp.mapping.close(),
+    ['<C-a>'] = cmp.mapping.abort(),
+    ['<C-j>'] = cmp.mapping(function()
+      if luasnip.expand_or_jumpable() then
         luasnip.expand_or_jump()
-      else
-        fallback()
       end
     end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
+    ['<C-k>'] = cmp.mapping(function()
+      if luasnip.jumpable(-1) then
         luasnip.jump(-1)
+      end
+    end, { 'i', 's' }),
+    ['<C-h>'] = cmp.mapping(function(fallback)
+      if luasnip.choice_active() then
+        luasnip.change_choice(1)
       else
         fallback()
       end
@@ -478,5 +513,6 @@ cmp.setup {
   },
 }
 
+require("custom.snippets")
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
