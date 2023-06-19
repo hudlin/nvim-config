@@ -160,7 +160,7 @@ require('lazy').setup({
       require("nvim-surround").setup{}
     end
   },
-
+    
   {
     "folke/todo-comments.nvim",
     dependencies = { "folke/trouble.nvim" },
