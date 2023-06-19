@@ -85,6 +85,8 @@ require('lazy').setup({
     end,
   },
 
+  { 'nvim-tree/nvim-web-devicons', opts = {} },
+
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -140,6 +142,10 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'nvim-treesitter/playground',
+  },
+
   -- :GoImpl {reciver} {interface}
   { 'rhysd/vim-go-impl' },
 
@@ -153,6 +159,20 @@ require('lazy').setup({
     config = function()
       require("nvim-surround").setup{}
     end
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "folke/trouble.nvim" },
+    opts = {
+      keywords = {
+        TODO = { alt = { "todo" } },
+      },
+      highlight = {
+        keyword = "fg",
+        after = "",
+      },
+    },
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -259,7 +279,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
-require('telescope').setup {}
+require('telescope').setup {
+  defaults = {
+    layout_strategy = "vertical"
+  }
+}
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
@@ -287,7 +311,7 @@ vim.keymap.set('n', '<leader>D', require('telescope.builtin').diagnostics, { des
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   --ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'help', 'vim' },
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vim', 'query' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
